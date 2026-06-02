@@ -46,38 +46,6 @@ modules:
         properties:
           url: ${default-url}
 
-  # ─── Destination content - cria destination na subaccount ───────────────────
-  # Este módulo popula o Destination Service com a entrada necessária para o
-  # Joule Studio descobrir e chamar o MCP server com OAuth2ClientCredentials.
-  - name: joule-mcp-destination-content
-    type: com.sap.application.content
-    requires:
-      - name: joule-mcp-destination-service
-        parameters:
-          content-target: true
-      - name: joule-mcp-xsuaa
-        parameters:
-          service-key:
-            name: joule-mcp-xsuaa-destination-key
-      - name: joule-mcp-srv-api
-    parameters:
-      content:
-        subaccount:
-          destinations:
-            - Name: joule-mcp-research-server
-              Description: MCP Research Server for Joule Studio - Perplexity Sonar via SAP AI Core
-              # URL do app sem trailing /mcp - Joule Studio adiciona automaticamente
-              URL: ~{joule-mcp-srv-api/url}
-              Authentication: OAuth2ClientCredentials
-              # O Destination Service resolve clientid/clientsecret da service-key automaticamente
-              TokenServiceInstanceName: joule-mcp-xsuaa
-              TokenServiceKeyName: joule-mcp-xsuaa-destination-key
-              # Propriedade obrigatória para visibilidade no Joule Studio
-              "sap-joule-studio-mcp-server": "true"
-          existing_destinations_policy: update
-    build-parameters:
-      no-source: true
-
 resources:
 
   # ─── XSUAA - criado pelo MTA ─────────────────────────────────────────────────
@@ -101,9 +69,9 @@ resources:
       service-name: default_aicore
 
   # ─── Destination Service - instância EXISTENTE na subaccount ────────────────
-  # Requer que o Destination Service esteja habilitado na subaccount BTP.
-  # Se ainda não existir uma instância, alterar para org.cloudfoundry.managed-service
-  # com service: destination e service-plan: lite.
+  # A destination "joule-mcp-research-server" (NoAuthentication, subaccount-level)
+  # é criada automaticamente pelo script post-deploy ou manualmente no BTP Cockpit.
+  # O MTA content deployer não suporta subaccount destinations com NoAuthentication.
   - name: joule-mcp-destination-service
     type: org.cloudfoundry.existing-service
     parameters:
