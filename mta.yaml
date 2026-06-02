@@ -62,7 +62,7 @@ modules:
       - name: joule-mcp-srv-api
     parameters:
       content:
-        instance:
+        subaccount:
           destinations:
             - Name: joule-mcp-research-server
               Description: MCP Research Server for Joule Studio - Perplexity Sonar via SAP AI Core
