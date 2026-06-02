@@ -1,0 +1,52 @@
+{
+  "name": "joule-mcp-research-server",
+  "version": "1.0.0",
+  "description": "CAP MCP Server for Joule agents - web research via SAP Generative AI Hub / Perplexity Sonar",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node node_modules/@sap/cds/bin/serve.js",
+    "watch": "cds watch",
+    "watch:hybrid": "cds watch --profile hybrid",
+    "build": "cds build",
+    "test": "node --test test/**/*.test.js",
+    "test:coverage": "node --test --experimental-test-coverage test/**/*.test.js",
+    "lint": "eslint srv/ test/"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@sap-ai-sdk/foundation-models": "^2.11.0",
+    "@sap-ai-sdk/orchestration": "^2.11.0",
+    "@sap/cds": "^8.1.0",
+    "@sap/xssec": "^4.2.0",
+    "express": "^4.21.2",
+    "passport": "^0.7.0",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^2.4.0",
+    "@sap/cds-dk": "^8.1.1"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": { "database": ":memory:" }
+      },
+      "[production]": {
+        "db": false
+      },
+      "auth": {
+        "kind": "dummy"
+      }
+    },
+    "server": {
+      "cors": true
+    },
+    "log": {
+      "format": "json"
+    }
+  }
+}

@@ -1,0 +1,63 @@
+_schema-version: "3.1"
+ID: joule-mcp-research-server
+version: 1.0.0
+description: CAP MCP Server for Joule agents - Perplexity Sonar via SAP Generative AI Hub
+
+parameters:
+  enable-parallel-deployments: true
+
+modules:
+
+  # ─── Módulo principal CAP ────────────────────────────────────────────────────
+  - name: joule-mcp-srv
+    type: nodejs
+    path: .
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 512M
+      disk-quota: 1G
+    build-parameters:
+      builder: npm
+      build-result: .
+      ignore:
+        - .env
+        - default-env.json
+        - .cdsrc-private.json
+        - node_modules/
+        - test/
+        - coverage/
+        - mta_archives/
+        - "*.log"
+    properties:
+      AICORE_RESOURCE_GROUP: default
+      GENAIHUB_DEPLOYMENT_ID: d42cc6a9f1d2b9fb
+      GENAIHUB_MODEL_NAME: sonar
+      GENAIHUB_ALLOWED_MODELS: sonar,sonar-pro
+      MCP_REQUIRE_AUTH: true
+      LOG_LEVEL: info
+      NODE_ENV: production
+    requires:
+      - name: joule-mcp-xsuaa
+      - name: aicore-default
+
+resources:
+
+  # ─── XSUAA - criado pelo MTA ─────────────────────────────────────────────────
+  - name: joule-mcp-xsuaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: joule-mcp-research-server-${org}-${space}
+        tenant-mode: dedicated
+
+  # ─── SAP AI Core - instância EXISTENTE ──────────────────────────────────────
+  # resource lógico no MTA:   aicore-default
+  # service instance no CF:   default_aicore
+  # AI Core resource group:   default  (env AICORE_RESOURCE_GROUP)
+  - name: aicore-default
+    type: org.cloudfoundry.existing-service
+    parameters:
+      service-name: default_aicore

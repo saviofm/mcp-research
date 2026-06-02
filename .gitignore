@@ -1,0 +1,39 @@
+# Dependências e build
+node_modules/
+gen/
+dist/
+
+# Configuração local privada (contém credenciais e bindings)
+.cdsrc-private.json
+.env
+*.local
+
+# SAP AI Core / BTP service keys (NUNCA versionar)
+default-env.json
+service-key*.json
+*-service-key.json
+aicore-service-key.json
+xsuaa-service-key.json
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Testes
+coverage/
+.nyc_output/
+
+# MTA build
+mta_archives/
+.mta/

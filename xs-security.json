@@ -1,0 +1,68 @@
+{
+  "xsappname": "joule-mcp-research-server",
+  "tenant-mode": "dedicated",
+  "description": "XSUAA security configuration for Joule MCP Research Server",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.ResearchViewer",
+      "description": "Read-only access to basic research resources"
+    },
+    {
+      "name": "$XSAPPNAME.ResearchUser",
+      "description": "Execute MCP research tools (perplexity_sonar_answer, sap_focused_sonar_search, research_with_guardrails)"
+    },
+    {
+      "name": "$XSAPPNAME.ResearchAdmin",
+      "description": "Access to administrative logs and statistics"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "ResearchViewer",
+      "description": "Basic viewer - access to health and status endpoints",
+      "scope-references": [
+        "$XSAPPNAME.ResearchViewer"
+      ]
+    },
+    {
+      "name": "ResearchUser",
+      "description": "Can execute all MCP research tools",
+      "scope-references": [
+        "$XSAPPNAME.ResearchViewer",
+        "$XSAPPNAME.ResearchUser"
+      ]
+    },
+    {
+      "name": "ResearchAdmin",
+      "description": "Full access including admin logs and statistics",
+      "scope-references": [
+        "$XSAPPNAME.ResearchViewer",
+        "$XSAPPNAME.ResearchUser",
+        "$XSAPPNAME.ResearchAdmin"
+      ]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "Joule_MCP_Research_User",
+      "description": "Assign to users who need to use MCP research tools via Joule",
+      "role-template-references": [
+        "$XSAPPNAME.ResearchUser"
+      ]
+    },
+    {
+      "name": "Joule_MCP_Research_Admin",
+      "description": "Assign to administrators who need access to research logs",
+      "role-template-references": [
+        "$XSAPPNAME.ResearchAdmin"
+      ]
+    }
+  ],
+  "authorities": [
+    "$XSAPPNAME.ResearchUser"
+  ],
+  "oauth2-configuration": {
+    "token-validity": 43200,
+    "redirect-uris": []
+  }
+}
